@@ -2,7 +2,8 @@ import requests
 import pandas as pd
 import streamlit as st
 
-API_KEY = "42a4c63d115c8668bcd15bd10877255ccd84b435d66951baf45bb0eeaaa14edd"
+import os
+API_KEY = os.environ.get("API_KEY", "")
 URL = "http://apis.data.go.kr/1230000/at/ShoppingMallPrdctInfoService/getThptyUcntrctPrdctInfoList"
 
 def get_all_data(품명):
