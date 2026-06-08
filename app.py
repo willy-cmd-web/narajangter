@@ -104,7 +104,10 @@ if st.button("🔍 조회", type="primary"):
 
                 요약 = 요약[["업체명", "기업구분", "제품수", "제조사", "인증정보", "계약시작일", "계약종료일"]]
                 요약 = 요약.sort_values("계약종료일").reset_index(drop=True)
-                요약.insert(0, "No", range(1, len(요약) + 1))
+                if "No" not in 요약.columns:
+                    요약.insert(0, "No", range(1, len(요약) + 1))
+                else:
+                요약["No"] = range(1, len(요약) + 1)
                 요약.insert(0, "No", range(1, len(요약) + 1))
 
                 st.success(f"총 {len(요약)}개 우수제품 업체 조회 완료")
