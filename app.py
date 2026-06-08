@@ -1,8 +1,9 @@
 import requests
 import pandas as pd
 import streamlit as st
-
 import os
+from datetime import datetime, timedelta
+
 API_KEY = os.environ.get("API_KEY", "")
 URL = "http://apis.data.go.kr/1230000/at/ShoppingMallPrdctInfoService/getThptyUcntrctPrdctInfoList"
 
@@ -52,17 +53,13 @@ def 데이터정리(items):
         })
     return 결과
 
-from datetime import datetime, timedelta
-
 def 하이라이트(row):
     styles = [""] * len(row)
     cols = list(row.index)
-    
-    # 아키페이스 행 노란색
+
     if "아키페이스" in str(row["업체명"]):
         styles = ["background-color: #fff9c4"] * len(row)
-    
-    # 계약종료일 1년 이하 빨간색
+
     try:
         종료일 = datetime.strptime(str(row["계약종료일"]), "%Y-%m-%d")
         if 종료일 <= datetime.now() + timedelta(days=365):
@@ -70,7 +67,7 @@ def 하이라이트(row):
             styles[idx] = "color: red; font-weight: bold"
     except:
         pass
-    
+
     return styles
 
 st.set_page_config(page_title="나라장터 우수제품 조회", layout="wide")
@@ -104,10 +101,6 @@ if st.button("🔍 조회", type="primary"):
 
                 요약 = 요약[["업체명", "기업구분", "제품수", "제조사", "인증정보", "계약시작일", "계약종료일"]]
                 요약 = 요약.sort_values("계약종료일").reset_index(drop=True)
-                if "No" not in 요약.columns:
-                    요약.insert(0, "No", range(1, len(요약) + 1))
-                else:
-                요약["No"] = range(1, len(요약) + 1)
                 요약.insert(0, "No", range(1, len(요약) + 1))
 
                 st.success(f"총 {len(요약)}개 우수제품 업체 조회 완료")
