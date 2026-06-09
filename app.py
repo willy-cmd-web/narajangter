@@ -114,7 +114,7 @@ if st.button("🔍 조회", type="primary"):
             # MAS 업체 수 계산 (필터 전)
             mas_업체수 = get_mas_업체수(품명.strip())
             우수_업체수 = df[df["우수제품"] == "Y"]["업체명"].nunique()
-            전체_업체수 = df["업체명"].nunique()
+            전체_업체수 = 우수_업체수 + mas_업체수
 
             # 요약 카드
             col1, col2, col3 = st.columns(3)
