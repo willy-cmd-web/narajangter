@@ -86,6 +86,17 @@ if st.button("🔍 조회", type="primary"):
             st.error(f"'{품명}' 검색 결과가 없습니다.")
         else:
             df = pd.DataFrame(데이터정리(items))
+            # MAS 업체 수 계산 (필터 전)
+            mas_업체수 = df[df["우수제품"] != "Y"]["업체명"].nunique()
+            우수_업체수 = df[df["우수제품"] == "Y"]["업체명"].nunique()
+            전체_업체수 = df["업체명"].nunique()
+
+            # 요약 카드
+            col1, col2, col3 = st.columns(3)
+            col1.metric("🏆 우수제품 업체", f"{우수_업체수}개")
+            col2.metric("🏪 MAS 업체", f"{mas_업체수}개")
+            col3.metric("📊 전체 업체", f"{전체_업체수}개")
+
             df = df[df["우수제품"] == "Y"]
 
             if df.empty:
