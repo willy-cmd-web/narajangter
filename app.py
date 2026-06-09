@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 
 API_KEY = os.environ.get("API_KEY", "")
 URL = "http://apis.data.go.kr/1230000/at/ShoppingMallPrdctInfoService/getThptyUcntrctPrdctInfoList"
+MAS_URL = "http://apis.data.go.kr/1230000/at/ShoppingMallPrdctInfoService/getMASCntrctPrdctInfoList"
 
 def get_all_data(품명):
     all_items = []
