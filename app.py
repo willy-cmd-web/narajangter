@@ -110,7 +110,11 @@ if st.button("🔍 조회", type="primary"):
         else:
             df = pd.DataFrame(데이터정리(items))
             # MAS 업체 수 계산 (필터 전)
-            mas_업체수 = get_mas_업체수(품명.strip())
+            mas_업체목록 = get_mas_업체목록(품명.strip())
+            우수_업체목록 = set(df[df["우수제품"] == "Y"]["업체명"].unique())
+            우수_업체수 = len(우수_업체목록)
+            mas_업체수 = len(mas_업체목록)
+            전체_업체수 = len(우수_업체목록 | mas_업체목록)
             우수_업체수 = df[df["우수제품"] == "Y"]["업체명"].nunique()
             전체_업체수 = 우수_업체수 + mas_업체수
 
