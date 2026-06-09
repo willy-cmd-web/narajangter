@@ -37,6 +37,30 @@ def get_all_data(품명):
     progress.empty()
     return all_items, total
 
+def get_mas_업체수(품명):
+    params = {
+        "ServiceKey": API_KEY,
+        "numOfRows": 1,
+        "pageNo": 1,
+        "prdctClsfcNoNm": 품명,
+        "type": "json"
+    }
+    res = requests.get(MAS_URL, params=params)
+    data = res.json()
+    body = data["response"]["body"]
+    total = int(body.get("totalCount", 0))
+    if total == 0:
+        return 0
+    # 전체 데이터에서 업체 수 카운트
+    params["numOfRows"] = total
+    res = requests.get(MAS_URL, params=params)
+    data = res.json()
+    items = data["response"]["body"].get("items", [])
+    if isinstance(items, dict):
+        items = [items]
+    업체들 = set(item.get("cntrctCorpNm", "") for item in items)
+    return len(업체들)
+    
 def 데이터정리(items):
     결과 = []
     for item in items:
