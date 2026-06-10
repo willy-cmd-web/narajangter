@@ -57,9 +57,8 @@ def get_mas_업체목록(품명):
     items = data["response"]["body"].get("items", [])
     if isinstance(items, dict):
         items = [items]
-    st.write(f"MAS 총 건수: {total}")
-    st.write(f"샘플 품명: {[item.get('prdctClsfcNoNm', '') for item in items[:3]]}")    
-    return set(item.get("cntrctCorpNm", "") for item in items)
+    filtered = [item for item in items if item.get("prdctClsfcNoNm", "") == 품명]
+    return set(item.get("cntrctCorpNm", "") for item in filtered)
     
 def 데이터정리(items):
     결과 = []
