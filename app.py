@@ -112,8 +112,8 @@ if st.button("🔍 조회", type="primary"):
             df = pd.DataFrame(데이터정리(items))
             # MAS 업체 수 계산 (필터 전)
             우수_업체수 = df[df["우수제품"] == "Y"]["업체명"].nunique()
-            쇼핑몰_링크 = f"https://shop.g2b.go.kr/index.jsp?cate1=&cate2=&cate3=&cate4=&searchType=prdctClsfcNoNm&searchWord={품명.strip()}"
-
+            쇼핑몰_링크 = f"https://shop.g2b.go.kr/index.jsp?prdctClsfcNoNm={품명.strip()}"
+            
             col1, col2 = st.columns(2)
             col1.metric("🏆 우수제품 업체", f"{우수_업체수}개")
             with col2:
