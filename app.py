@@ -111,19 +111,14 @@ if st.button("🔍 조회", type="primary"):
         else:
             df = pd.DataFrame(데이터정리(items))
             # MAS 업체 수 계산 (필터 전)
-            mas_업체목록 = get_mas_업체목록(품명.strip())
-            우수_업체목록 = set(df[df["우수제품"] == "Y"]["업체명"].unique())
-            우수_업체수 = len(우수_업체목록)
-            mas_업체수 = len(mas_업체목록)
-            전체_업체수 = len(우수_업체목록 | mas_업체목록)
             우수_업체수 = df[df["우수제품"] == "Y"]["업체명"].nunique()
-            전체_업체수 = 우수_업체수 + mas_업체수
+            쇼핑몰_링크 = f"https://shop.g2b.go.kr/index.jsp?cate1=&cate2=&cate3=&cate4=&searchType=prdctClsfcNoNm&searchWord={품명.strip()}"
 
-            # 요약 카드
-            col1, col2, col3 = st.columns(3)
+            col1, col2 = st.columns(2)
             col1.metric("🏆 우수제품 업체", f"{우수_업체수}개")
-            col2.metric("🏪 MAS 업체", f"{mas_업체수}개")
-            col3.metric("📊 전체 업체", f"{전체_업체수}개")
+            with col2:
+                st.markdown("**🏪 전체 업체 현황**")
+                st.markdown(f"[나라장터 쇼핑몰에서 확인하기 →]({쇼핑몰_링크})")
 
             df = df[df["우수제품"] == "Y"]
 
