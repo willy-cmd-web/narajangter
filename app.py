@@ -59,7 +59,7 @@ def get_mas_업체목록(품명):
         items = [items]
     filtered = [item for item in items if 품명 in item.get("prdctSpecNm", "")]
     return set(item.get("cntrctCorpNm", "") for item in filtered)
-    
+
 def 데이터정리(items):
     결과 = []
     for item in items:
@@ -81,10 +81,8 @@ def 데이터정리(items):
 def 하이라이트(row):
     styles = [""] * len(row)
     cols = list(row.index)
-
     if "아키페이스" in str(row["업체명"]):
         styles = ["background-color: #fff9c4"] * len(row)
-
     try:
         종료일 = datetime.strptime(str(row["계약종료일"]), "%Y-%m-%d")
         if 종료일 <= datetime.now() + timedelta(days=365):
@@ -92,7 +90,6 @@ def 하이라이트(row):
             styles[idx] = "color: red; font-weight: bold"
     except:
         pass
-
     return styles
 
 st.set_page_config(page_title="나라장터 우수제품 조회", layout="wide")
@@ -111,9 +108,13 @@ if st.button("🔍 조회", type="primary"):
             st.error(f"'{품명}' 검색 결과가 없습니다.")
         else:
             df = pd.DataFrame(데이터정리(items))
-            # MAS 업체 수 계산 (필터 전)
+
             전체_계약업체수 = df["업체명"].nunique()
-                df = df[df["우수제품"] == "Y"]
+            df = df[df["우수제품"] == "Y"]
+
+            if df.empty:
+                st.warning("우수제품 지정 업체가 없습니다.")
+            else:
                 우수_업체수 = df["업체명"].nunique()
                 쇼핑몰_링크 = "https://shop.g2b.go.kr"
 
@@ -124,37 +125,14 @@ if st.button("🔍 조회", type="primary"):
                     st.markdown("**📊 전체 업체 현황**")
                     st.markdown(f"[나라장터 쇼핑몰에서 확인하기 →]({쇼핑몰_링크})")
 
-            if df.empty:
-                st.warning("우수제품 지정 업체가 없습니다.")
-            else:
                 요약 = df.groupby(["업체명", "기업구분"]).agg(
                     제품수=("제품규격", "count"),
                     제조사=("제조사", lambda x: ", ".join(x.dropna().unique())),
-                    인증정보=("인증정보", lambda x: ", ".join(x.dropna().unique())),
                     본사소재지=("본사소재지", lambda x: x.dropna().iloc[0] if len(x.dropna()) > 0 else ""),
+                    인증정보=("인증정보", lambda x: ", ".join(x.dropna().unique())),
                     계약시작일=("계약시작일", "min"),
                     계약종료일=("계약종료일", "max"),
                 ).reset_index()
 
                 요약 = 요약[["업체명", "기업구분", "제품수", "제조사", "본사소재지", "인증정보", "계약시작일", "계약종료일"]]
                 요약 = 요약.sort_values("계약종료일").reset_index(drop=True)
-                요약.insert(0, "No", range(1, len(요약) + 1))
-
-                st.success(f"총 {len(요약)}개 우수제품 업체 조회 완료")
-                st.dataframe(
-                    요약.style.apply(하이라이트, axis=1),
-                    use_container_width=True,
-                    hide_index=True
-                )
-
-                import io
-                buf = io.BytesIO()
-                with pd.ExcelWriter(buf, engine="openpyxl") as writer:
-                    요약.to_excel(writer, sheet_name="업체별요약", index=False)
-                    df.to_excel(writer, sheet_name="전체상세", index=False)
-                st.download_button(
-                    label="📥 엑셀 저장",
-                    data=buf.getvalue(),
-                    file_name=f"나라장터_{품명}.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                )
