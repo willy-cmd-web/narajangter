@@ -110,12 +110,12 @@ if st.button("🔍 조회", type="primary"):
             df = pd.DataFrame(데이터정리(items))
 
             전체_계약업체수 = df["업체명"].nunique()
-            df = df[df["우수제품"] == "Y"]
+            df_우수 = df[df["우수제품"] == "Y"]
 
-            if df.empty:
+            if df_우수.empty:
                 st.warning("우수제품 지정 업체가 없습니다.")
             else:
-                우수_업체수 = df["업체명"].nunique()
+                우수_업체수 = df_우수["업체명"].nunique()
                 쇼핑몰_링크 = "https://shop.g2b.go.kr"
 
                 col1, col2, col3 = st.columns(3)
@@ -125,7 +125,7 @@ if st.button("🔍 조회", type="primary"):
                     st.markdown("**📊 전체 업체 현황**")
                     st.markdown(f"[나라장터 쇼핑몰에서 확인하기 →]({쇼핑몰_링크})")
 
-                요약 = df.groupby(["업체명", "기업구분"]).agg(
+                요약 = df_우수.groupby(["업체명", "기업구분"]).agg(
                     제품수=("제품규격", "count"),
                     제조사=("제조사", lambda x: ", ".join(x.dropna().unique())),
                     본사소재지=("본사소재지", lambda x: x.dropna().iloc[0] if len(x.dropna()) > 0 else ""),
