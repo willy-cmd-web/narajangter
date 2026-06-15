@@ -118,10 +118,9 @@ if st.button("🔍 조회", type="primary"):
                 우수_업체수 = df_우수["업체명"].nunique()
                 쇼핑몰_링크 = "https://shop.g2b.go.kr"
 
-                col1, col2, col3 = st.columns(3)
+                col1, col2 = st.columns(2)
                 col1.metric("🏆 우수제품 업체", f"{우수_업체수}개")
-                col2.metric("🏪 쇼핑몰 계약업체", f"{전체_계약업체수}개")
-                with col3:
+                with col2:
                     st.markdown("**📊 전체 업체 현황**")
                     st.markdown(f"[나라장터 쇼핑몰에서 확인하기 →]({쇼핑몰_링크})")
 
