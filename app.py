@@ -74,6 +74,7 @@ def 데이터정리(items):
             "계약종료일": item.get("cntrctEndDate", ""),
             "제조사":     item.get("prdctMakrNm", ""),
             "인증정보":   item.get("qltyRltnCertInfo", ""),
+            "우선구매":   item.get("dutyPurchsObjCertNm", ""),
             "본사소재지": item.get("hdoffceLocplc", ""),
         })
     return 결과
@@ -129,11 +130,12 @@ if st.button("🔍 조회", type="primary"):
                     제조사=("제조사", lambda x: ", ".join(x.dropna().unique())),
                     본사소재지=("본사소재지", lambda x: x.dropna().iloc[0] if len(x.dropna()) > 0 else ""),
                     인증정보=("인증정보", lambda x: ", ".join(x.dropna().unique())),
+                    우선구매=("우선구매", lambda x: ", ".join(x.dropna().unique())),
                     계약시작일=("계약시작일", "min"),
                     계약종료일=("계약종료일", "max"),
                 ).reset_index()
 
-                요약 = 요약[["업체명", "기업구분", "제품수", "제조사", "본사소재지", "인증정보", "계약시작일", "계약종료일"]]
+                요약 = 요약[["업체명", "기업구분", "제품수", "제조사", "본사소재지", "우선구매", "인증정보", "계약시작일", "계약종료일"]]
                 요약 = 요약.sort_values("계약종료일").reset_index(drop=True)
                 요약.insert(0, "No", range(1, len(요약) + 1))
 
