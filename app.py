@@ -136,3 +136,23 @@ if st.button("🔍 조회", type="primary"):
 
                 요약 = 요약[["업체명", "기업구분", "제품수", "제조사", "본사소재지", "인증정보", "계약시작일", "계약종료일"]]
                 요약 = 요약.sort_values("계약종료일").reset_index(drop=True)
+                요약.insert(0, "No", range(1, len(요약) + 1))
+
+                st.success(f"총 {len(요약)}개 우수제품 업체 조회 완료")
+                st.dataframe(
+                    요약.style.apply(하이라이트, axis=1),
+                    use_container_width=True,
+                    hide_index=True
+                )
+
+                import io
+                buf = io.BytesIO()
+                with pd.ExcelWriter(buf, engine="openpyxl") as writer:
+                    요약.to_excel(writer, sheet_name="업체별요약", index=False)
+                    df_우수.to_excel(writer, sheet_name="전체상세", index=False)
+                st.download_button(
+                    label="📥 엑셀 저장",
+                    data=buf.getvalue(),
+                    file_name=f"나라장터_{품명}.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
